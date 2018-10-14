@@ -50,7 +50,7 @@
                 @Html.DisplayFor(modelItem => item.Title)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.ReleaseDate)
+                @Html.ValueFor(modelItem => item.ReleaseDate, "{0:MMM dd, yyyy}")
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Genre)

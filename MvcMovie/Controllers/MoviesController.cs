@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcMovie.Models;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace MvcMovie.Controllers
 {
@@ -69,6 +72,36 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
+            return View(movie);
+        }
+
+        public async Task<IActionResult> GetFromIMDB(string movieTitle)
+        {
+            HttpClient client = new HttpClient();
+            movieTitle = movieTitle.Replace(" ", "+");
+            string url = "http://www.omdbapi.com/?t=" + movieTitle;
+            var response = await client.GetAsync(url);
+            var data = await response.Content.ReadAsStringAsync();
+            var json = JsonConvert.DeserializeObject(data).ToString();
+            dynamic omdbMovie = JObject.Parse(json);
+            return omdbMovie;
+        }
+
+        public IActionResult GetFromIMDB()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> GetFromIMDB([Bind("ID,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.Add(movie);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
             return View(movie);
         }
 

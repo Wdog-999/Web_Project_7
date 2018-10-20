@@ -75,35 +75,59 @@ namespace MvcMovie.Controllers
             return View(movie);
         }
 
-        public async Task<IActionResult> GetFromIMDB(string movieTitle)
+        public async Task<IActionResult> GetFromIMDB(string movietitle, string __RequestVerificationToken)
         {
             HttpClient client = new HttpClient();
-            movieTitle = movieTitle.Replace(" ", "+");
-            string url = "http://www.omdbapi.com/?t=" + movieTitle;
+            movietitle = movietitle.Replace(" ", "+");
+            string url = "http://www.omdbapi.com/?t=" + movietitle + "&apikey=" + __RequestVerificationToken;
             var response = await client.GetAsync(url);
             var data = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject(data).ToString();
             dynamic omdbMovie = JObject.Parse(json);
-            return omdbMovie;
-        }
-
-        public IActionResult GetFromIMDB()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> GetFromIMDB([Bind("ID,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
-        {
-            if (ModelState.IsValid)
+            Movie movie = new Movie();
+            movie.Title = omdbMovie.Title;
+            string genre = omdbMovie.Genre;
+            if (genre.Contains(","))
             {
-                _context.Add(movie);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                string[] genres = genre.Split(",");
+                movie.Genre = genres[0];
             }
+            else
+            {
+                movie.Genre = omdbMovie.Genre;
+            }
+            string rating = omdbMovie.Rated;
+            if (rating == "NOT RATED" || rating == "UNRATED")
+            {
+                rating = "NR";
+                movie.Rating = rating;
+            }
+            else
+            {
+                movie.Rating = omdbMovie.Rated;
+            }
+            movie.ReleaseDate = omdbMovie.Released;
+            movie.Poster = omdbMovie.Poster;
             return View(movie);
         }
+
+        //public IActionResult GetFromIMDB()
+        //{
+        //    return View();
+        //}
+
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> GetFromIMDB([Bind("ID,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(movie);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(movie);
+        //}
 
         // GET: Movies/Create
         public IActionResult Create()
@@ -116,13 +140,22 @@ namespace MvcMovie.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ID,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
+        public async Task<IActionResult> Create([Bind("ID,Title,ReleaseDate,Genre,Price,Rating,Poster")] Movie movie)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(movie);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                Movie existingMovie = await _context.Movie.SingleOrDefaultAsync(m => m.Title == movie.Title);
+                if (existingMovie == null)
+                {
+                    _context.Add(movie);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "" + movie.Title + " is already in the database.");
+                    return View(movie);
+                }
             }
             return View(movie);
         }

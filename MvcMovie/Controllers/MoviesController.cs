@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using MvcMovie.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -16,7 +17,7 @@ namespace MvcMovie.Controllers
     {
         private readonly MvcMovieContext _context;
 
-        public MoviesController(MvcMovieContext context)
+        public MoviesController(MvcMovieContext context, IConfiguration config)
         {
             _context = context;
         }

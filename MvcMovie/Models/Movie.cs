@@ -26,6 +26,6 @@ namespace MvcMovie.Models
         public decimal Price { get; set; }
         public string Rating { get; set; }
         public string Poster { get; set; }
-        public string Key { get; set; }
+        //public string Key { get; set; }
     }
 }

@@ -16,10 +16,12 @@ namespace MvcMovie.Controllers
     public class MoviesController : Controller
     {
         private readonly MvcMovieContext _context;
+        private readonly IConfiguration config;
 
-        public MoviesController(MvcMovieContext context, IConfiguration config)
+        public MoviesController(MvcMovieContext context, IConfiguration iconfig)
         {
             _context = context;
+            config = iconfig;
         }
 
 
@@ -78,9 +80,14 @@ namespace MvcMovie.Controllers
 
         public async Task<IActionResult> GetFromIMDB(string movietitle, string __RequestVerificationToken)
         {
+            if(movietitle == null)
+            {
+                ModelState.AddModelError(string.Empty, "No movie was entered.");
+                return View();
+            }
             HttpClient client = new HttpClient();
             movietitle = movietitle.Replace(" ", "+");
-            string url = "http://www.omdbapi.com/?t=" + movietitle + "&apikey=" + __RequestVerificationToken;
+            string url = "http://www.omdbapi.com/?t=" + movietitle + "&apikey=" + config.GetValue<string>("APIKey");
             var response = await client.GetAsync(url);
             var data = await response.Content.ReadAsStringAsync();
             var json = JsonConvert.DeserializeObject(data).ToString();
@@ -88,6 +95,11 @@ namespace MvcMovie.Controllers
             Movie movie = new Movie();
             movie.Title = omdbMovie.Title;
             string genre = omdbMovie.Genre;
+            if (genre == null)
+            {
+                ModelState.AddModelError(string.Empty, "\"" + movietitle + "\" was not found.");
+                return View();
+            }
             if (genre.Contains(","))
             {
                 string[] genres = genre.Split(",");
@@ -111,24 +123,6 @@ namespace MvcMovie.Controllers
             movie.Poster = omdbMovie.Poster;
             return View(movie);
         }
-
-        //public IActionResult GetFromIMDB()
-        //{
-        //    return View();
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> GetFromIMDB([Bind("ID,Title,ReleaseDate,Genre,Price,Rating")] Movie movie)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(movie);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(movie);
-        //}
 
         // GET: Movies/Create
         public IActionResult Create()

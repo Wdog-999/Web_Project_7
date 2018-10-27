@@ -13,9 +13,14 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
-                <span asp-validation-for="Title" class="text-danger"></span>
+                <label asp-for="Title" class="control-label" @*hidden*@></label>
+                <input asp-for="Title" class="form-control" @*type="hidden"*@/>
+                <span asp-validation-for="Title" class="text-danger" @*hidden*@></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MovieID" class="control-label" @*hidden*@></label>
+                <input asp-for="MovieID" class="form-control" @*type="hidden"*@ />
+                <span asp-validation-for="MovieID" class="text-danger" @*hidden*@></span>
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>

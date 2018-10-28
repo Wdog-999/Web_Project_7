@@ -75,6 +75,10 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
+            IQueryable<int> reviewQuery = from m in _context.Review
+                                             orderby m.MovieID
+                                             select m.MovieID;
+
             return View(movie);
         }
 

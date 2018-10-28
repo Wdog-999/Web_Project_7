@@ -46,8 +46,8 @@ namespace MvcMovie.Controllers
         public IActionResult Create(string movietitle, int movieID)
         {
             Review review = new Review();
-            review.Title = movietitle;
             review.MovieID = movieID;
+            review.Title = movietitle;
             return View(review);
         }
 

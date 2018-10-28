@@ -19,9 +19,29 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Reviews
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(Boolean? asc, String property)
         {
-            return View(await _context.Review.ToListAsync());
+            var reviews = from m in _context.Review
+                         select m;
+
+            if (property == "Reviewer")
+            {
+                reviews = reviews.OrderBy(s => s.Name);
+            }
+            if (property == "Movie")
+            {
+                reviews = reviews.OrderBy(s => s.Title);
+            }
+            if (property == "Reviewer" && asc == false)
+            {
+                reviews = reviews.OrderByDescending(s => s.Name);
+            }
+            if (property == "Movie" && asc == false)
+            {
+                reviews = reviews.OrderByDescending(s => s.Title);
+            }
+
+            return View(await reviews.ToListAsync());
         }
 
         // GET: Reviews/Details/5

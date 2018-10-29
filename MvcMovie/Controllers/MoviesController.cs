@@ -75,11 +75,18 @@ namespace MvcMovie.Controllers
                 return NotFound();
             }
 
-            IQueryable<int> reviewQuery = from m in _context.Review
-                                             orderby m.MovieID
-                                             select m.MovieID;
+            IQueryable<Review> reviewQuery = from m in _context.Review
+                                             select m;
 
-            return View(movie);
+            var reviews = reviewQuery;
+
+            reviews = reviews.Where(s => s.MovieID == id);
+
+            var MRVM = new MovieReviewViewModel();
+            MRVM.movie = movie;
+            MRVM.reviews = reviews;
+
+            return View(MRVM);
         }
 
         public async Task<IActionResult> GetFromIMDB(string movietitle, string __RequestVerificationToken)

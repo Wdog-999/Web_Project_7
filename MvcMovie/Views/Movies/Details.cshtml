@@ -1,4 +1,4 @@
-﻿@model MvcMovie.Models.Movie
+﻿@model MvcMovie.Models.MovieReviewViewModel
 
 @{
     ViewData["Title"] = "Details";
@@ -14,55 +14,83 @@
             <hr />
             <dl class="dl-horizontal">
                 <dt>
-                    @Html.DisplayNameFor(model => model.Title)
+                    @Html.DisplayNameFor(modelItem => Model.movie.Title)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.Title)
+                    @Html.DisplayFor(modelItem => Model.movie.Title)
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.ReleaseDate)
+                    @Html.DisplayNameFor(modelItem => Model.movie.ReleaseDate)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.ReleaseDate)
+                    @Html.DisplayFor(modelItem => Model.movie.ReleaseDate)
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.Genre)
+                    @Html.DisplayNameFor(modelItem => Model.movie.Genre)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.Genre)
+                    @Html.DisplayFor(modelItem => Model.movie.Genre)
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.Price)
+                    @Html.DisplayNameFor(modelItem => Model.movie.Price)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.Price)
+                    @Html.DisplayFor(modelItem => Model.movie.Price)
                 </dd>
                 <dt>
-                    @Html.DisplayNameFor(model => model.Rating)
+                    @Html.DisplayNameFor(modelItem => Model.movie.Rating)
                 </dt>
                 <dd>
-                    @Html.DisplayFor(model => model.Rating)
+                    @Html.DisplayFor(modelItem => Model.movie.Rating)
                 </dd>
             </dl>
         </div>
         <div class="col-md-3">
-            <img src="@Html.DisplayFor(model => model.Poster)" />
+            <img src="@Html.DisplayFor(modelItem => Model.movie.Poster)" />
         </div>
     </div>
     </div>
         <div>
-            <a asp-action="Edit" asp-route-id="@Model.ID" class="btn btn-info">Edit</a> |
+            <a asp-action="Edit" asp-route-id="@Model.movie.ID" class="btn btn-info">Edit</a> |
             <a asp-action="Index" class="btn btn-info">Back to List</a>
         </div>
-        <div>
-
-        </div>
-        <div>
-            <form class="form-inline" asp-controller="Reviews" asp-action="Create" method="get">
-                <div class="form-group">
-                    <input type="text" name="movietitle" class="form-control col-sm-6" value=@Model.Title />
-                    <input type="number" name="movieID" class="form-control col-sm-6" value=@Model.ID />
-                </div>
-                <input type="submit" value="Write a Review" class="btn btn-info" />
-            </form>
-        </div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        Reviewer
+                    </th>
+                    <th>
+                        Comment
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.reviews)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Comment)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            </table>
+                    <div>
+                        <form class="form-inline" asp-controller="Reviews" asp-action="Create" method="get">
+                            <div class="form-group">
+                                <input type="text" name="movietitle" class="form-control col-sm-6" value=@Model.movie.Title />
+                                <input type="number" name="movieID" class="form-control col-sm-6" value=@Model.movie.ID />
+                            </div>
+                            <input type="submit" value="Write a Review" class="btn btn-info" />
+                        </form>
+                    </div>

@@ -88,9 +88,9 @@
                     <div>
                         <form class="form-inline" asp-controller="Reviews" asp-action="Create" method="get">
                             <div class="form-group">
-                                <input type="text" name="movietitle" class="form-control col-sm-6" value=@Model.movie.Title />
-                                <input type="number" name="movieID" class="form-control col-sm-6" value=@Model.movie.ID />
+                                <input type="hidden" name="movietitle" class="form-control col-sm-6" value="@Model.movie.Title"/>
+                                <input type="hidden" name="movieID" class="form-control col-sm-6" value="@Model.movie.ID"/>
                             </div>
-                            <input type="submit" value="Write a Review" class="btn btn-info" />
+                            <input type="submit" value="Write a Review" class="btn btn-lg btn-info" />
                         </form>
                     </div>

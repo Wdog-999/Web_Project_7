@@ -19,30 +19,34 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Reviews
-        public async Task<IActionResult> Index(Boolean? asc, String property)
+        public async Task<IActionResult> Index(String sortOrder)
         {
+            ViewData["NameSortParm"] = sortOrder == "Film" ? "Film_desc" : "Film";
+            ViewData["MovieSortParm"] = sortOrder == "Reviewer" ? "Reviewer_desc" : "Reviewer";
+
             var reviews = from m in _context.Review
                          select m;
 
-            if (property == "Reviewer")
+            switch (sortOrder)
             {
-                reviews = reviews.OrderBy(s => s.Name);
-            }
-            if (property == "Movie")
-            {
-                reviews = reviews.OrderBy(s => s.Title);
-            }
-            if (property == "Reviewer" && asc == false)
-            {
-                reviews = reviews.OrderByDescending(s => s.Name);
-            }
-            if (property == "Movie" && asc == false)
-            {
-                reviews = reviews.OrderByDescending(s => s.Title);
+                case "Film_desc":
+                    reviews = reviews.OrderByDescending(s => s.Title);
+                    break;
+                case "Film":
+                    reviews = reviews.OrderBy(s => s.Title);
+                    break;
+                case "Reviewer_desc":
+                    reviews = reviews.OrderByDescending(s => s.Name);
+                    break;
+                case "Reviewer":
+                    reviews = reviews.OrderBy(s => s.Name);
+                    break;
             }
 
             return View(await reviews.ToListAsync());
         }
+
+
 
         // GET: Reviews/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -63,10 +67,10 @@ namespace MvcMovie.Controllers
         }
 
         // GET: Reviews/Create
-        public IActionResult Create(string movietitle, int movieID)
+        public IActionResult Create(string movietitle, string movieID)
         {
             Review review = new Review();
-            review.MovieID = movieID;
+            review.MovieID = Int32.Parse(movieID);
             review.Title = movietitle;
             return View(review);
         }

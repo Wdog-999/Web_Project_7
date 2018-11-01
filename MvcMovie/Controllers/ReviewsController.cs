@@ -66,6 +66,11 @@ namespace MvcMovie.Controllers
             return View(review);
         }
 
+        public class MovieRedirect
+        {
+            public string ID { get; set; }
+        }
+
         // GET: Reviews/Create
         public IActionResult Create(string movietitle, string movieID)
         {
@@ -82,12 +87,12 @@ namespace MvcMovie.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID, MovieID,Title,Name,Comment")] Review review)
         {
-            string id = review.MovieID.ToString();
             if (ModelState.IsValid)
             {
                 _context.Add(review);
                 await _context.SaveChangesAsync();
-                var ID = Int32.Parse(id);
+                var ID = new MovieRedirect();
+                ID.ID = review.MovieID.ToString();
                 return RedirectToAction("Details", "Movies", ID);
             }
             return View(review);
@@ -139,7 +144,9 @@ namespace MvcMovie.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                var ID = new MovieRedirect();
+                ID.ID = review.MovieID.ToString();
+                return RedirectToAction("Details", "Movies", ID);
             }
             return View(review);
         }
@@ -168,9 +175,11 @@ namespace MvcMovie.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var review = await _context.Review.FindAsync(id);
+            var ID = new MovieRedirect();
+            ID.ID = review.MovieID.ToString();
             _context.Review.Remove(review);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", "Movies", ID);
         }
 
         private bool ReviewExists(int id)

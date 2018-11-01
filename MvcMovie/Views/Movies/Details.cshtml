@@ -54,12 +54,14 @@
             <a asp-action="Edit" asp-route-id="@Model.movie.ID" class="btn btn-info">Edit</a> |
             <a asp-action="Index" class="btn btn-info">Back to List</a>
         </div>
+@if (Model.reviews.Any())
+{
         <table class="table">
             <thead>
                 <tr>
-                    <th>
+                    @*<th>
                         Reviewer
-                    </th>
+                    </th>*@
                     <th>
                         Comment
                     </th>
@@ -70,21 +72,29 @@
                 @foreach (var item in Model.reviews)
                 {
                     <tr>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.Name)
-                        </td>
+                        </td>*@
                         <td>
                             @Html.DisplayFor(modelItem => item.Comment)
+                            <br/>
+                            - <i>@Html.DisplayFor(modelItem => item.Name)</i>
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.ID">Edit</a> |
-                            <a asp-action="Details" asp-route-id="@item.ID">Details</a> |
-                            <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                            <a asp-controller="Reviews" asp-action="Edit" asp-route-id="@item.ID" class="btn btn-info">Edit</a> |
+                            <a asp-controller="Reviews" asp-action="Details" asp-route-id="@item.ID" class="btn btn-info">Details</a> |
+                            <a asp-controller="Reviews" asp-action="Delete" asp-route-id="@item.ID" class="btn btn-info">Delete</a>
                         </td>
                     </tr>
                 }
             </tbody>
             </table>
+}
+else
+{
+    <br />
+}
+
                     <div>
                         <form class="form-inline" asp-controller="Reviews" asp-action="Create" method="get">
                             <div class="form-group">

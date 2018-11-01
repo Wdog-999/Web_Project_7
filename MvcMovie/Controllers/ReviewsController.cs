@@ -82,11 +82,13 @@ namespace MvcMovie.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID, MovieID,Title,Name,Comment")] Review review)
         {
+            string id = review.MovieID.ToString();
             if (ModelState.IsValid)
             {
                 _context.Add(review);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var ID = Int32.Parse(id);
+                return RedirectToAction("Details", "Movies", ID);
             }
             return View(review);
         }

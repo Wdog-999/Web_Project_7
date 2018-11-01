@@ -4,9 +4,7 @@
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
-
-<h4>Review</h4>
+<h2>Write your review for <i>@Model.Title</i></h2>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -14,12 +12,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Title" class="control-label" hidden></label>
-                <input asp-for="Title" class="form-control" @*type="hidden"*@/>
+                <input asp-for="Title" class="form-control" type="hidden"/>
                 <span asp-validation-for="Title" class="text-danger" hidden></span>
             </div>
             <div class="form-group">
                 <label asp-for="MovieID" class="control-label" hidden></label>
-                <input asp-for="MovieID" class="form-control" @*type="hidden"*@ />
+                <input asp-for="MovieID" class="form-control" type="hidden" />
                 <span asp-validation-for="MovieID" class="text-danger" hidden></span>
             </div>
             <div class="form-group">
